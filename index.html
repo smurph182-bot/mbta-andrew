@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Andrew → Alewife</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red: #DA291C;
+      --red-dim: #8B1A12;
+      --bg: #0A0A0A;
+      --surface: #111111;
+      --surface2: #1A1A1A;
+      --border: #2A2A2A;
+      --text: #F0F0F0;
+      --text-dim: #666666;
+      --text-muted: #3A3A3A;
+      --green: #00C853;
+      --yellow: #FFD600;
+      --mono: 'DM Mono', monospace;
+      --display: 'Bebas Neue', sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      overflow: hidden;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      padding: 20px 24px 16px;
+      gap: 0;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .station-block {}
+
+    .line-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .line-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--red);
+      box-shadow: 0 0 10px var(--red);
+      flex-shrink: 0;
+    }
+
+    .line-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      color: var(--red);
+      text-transform: uppercase;
+    }
+
+    .station-name {
+      font-family: var(--display);
+      font-size: 52px;
+      line-height: 0.9;
+      letter-spacing: 0.02em;
+      color: var(--text);
+    }
+
+    .direction {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-top: 6px;
+    }
+
+    .direction span {
+      color: var(--text);
+    }
+
+    .clock-block {
+      text-align: right;
+    }
+
+    .clock {
+      font-family: var(--display);
+      font-size: 48px;
+      line-height: 1;
+      letter-spacing: 0.03em;
+      color: var(--text);
+    }
+
+    .date {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin-bottom: 14px;
+    }
+
+    /* Train list */
+    .trains {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .train-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+
+    .train-card.next {
+      border-color: var(--red-dim);
+      background: #160808;
+    }
+
+    .train-card.next::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--red);
+      box-shadow: 0 0 8px var(--red);
+    }
+
+    .train-card.arriving {
+      border-color: #1a5e00;
+      background: #061006;
+    }
+
+    .train-card.arriving::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+    }
+
+    .train-left {}
+
+    .train-seq {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+
+    .train-card.next .train-seq { color: var(--red-dim); }
+    .train-card.arriving .train-seq { color: #2d6e00; }
+
+    .train-dest {
+      font-family: var(--display);
+      font-size: 30px;
+      letter-spacing: 0.04em;
+      line-height: 1;
+      color: var(--text);
+    }
+
+    .train-time-label {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    .train-right {
+      text-align: right;
+    }
+
+    .train-eta {
+      font-family: var(--display);
+      font-size: 54px;
+      line-height: 1;
+      letter-spacing: 0.02em;
+    }
+
+    .train-card.next .train-eta { color: var(--red); }
+    .train-card.arriving .train-eta { color: var(--green); }
+    .train-card:not(.next):not(.arriving) .train-eta { color: var(--text-dim); }
+
+    .train-eta-unit {
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      color: inherit;
+      opacity: 0.7;
+      margin-left: 2px;
+    }
+
+    .train-sched {
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+
+    /* Status bar */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+
+    .status-dot-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 6px var(--green);
+      animation: pulse 2s infinite;
+    }
+
+    .status-dot.stale { background: var(--yellow); box-shadow: 0 0 6px var(--yellow); animation: none; }
+    .status-dot.error { background: var(--red); box-shadow: 0 0 6px var(--red); animation: none; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .status-text {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    .refresh-info {
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    /* Loading / error states */
+    .state-msg {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: var(--text-dim);
+    }
+
+    .state-msg .icon { font-size: 32px; }
+    .state-msg .msg { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; }
+
+    /* Alert banner */
+    .alert-banner {
+      background: #1a1200;
+      border: 1px solid #3a2800;
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      color: var(--yellow);
+      margin-bottom: 10px;
+      display: none;
+    }
+
+    .alert-banner.visible { display: block; }
+
+    /* Scanline overlay for aesthetic */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.03) 2px,
+        rgba(0,0,0,0.03) 4px
+      );
+      pointer-events: none;
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="station-block">
+      <div class="line-badge">
+        <div class="line-dot"></div>
+        <span class="line-label">Red Line</span>
+      </div>
+      <div class="station-name">ANDREW</div>
+      <div class="direction">Toward <span>Alewife</span></div>
+    </div>
+    <div class="clock-block">
+      <div class="clock" id="clock">--:--</div>
+      <div class="date" id="date">---</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="alert-banner" id="alertBanner"></div>
+
+  <div class="trains" id="trainList">
+    <div class="state-msg" id="loadingMsg">
+      <div class="icon">⬤</div>
+      <div class="msg">Fetching predictions...</div>
+    </div>
+  </div>
+
+  <div class="status-bar">
+    <div class="status-dot-wrap">
+      <div class="status-dot" id="statusDot"></div>
+      <span class="status-text" id="statusText">Connecting</span>
+    </div>
+    <span class="refresh-info">Refreshes every 30s</span>
+  </div>
+
+  <!-- Keep-alive: silent audio loop prevents Silk from timing out -->
+  <audio id="keepAlive" loop style="display:none">
+    <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=" type="audio/wav">
+  </audio>
+
+  <script>
+    // ── Config ──────────────────────────────────────────────
+    const STOP_ID   = 'place-andrw';   // Andrew Station
+    const ROUTE_ID  = 'Red';
+    const DIRECTION = 1;               // 1 = inbound (toward Alewife)
+    const MAX_TRAINS = 3;
+    const REFRESH_MS = 30000;
+    const API_BASE  = 'https://api-v3.mbta.com';
+    // ────────────────────────────────────────────────────────
+
+    let lastUpdate = null;
+    let refreshTimer = null;
+
+    // Keep Silk alive
+    const ka = document.getElementById('keepAlive');
+    ka.volume = 0;
+    ka.play().catch(() => {});
+    // Re-attempt play every 60s as a fallback
+    setInterval(() => { if (ka.paused) ka.play().catch(() => {}); }, 60000);
+
+    // Clock
+    function updateClock() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2,'0');
+      const m = String(now.getMinutes()).padStart(2,'0');
+      document.getElementById('clock').textContent = `${h}:${m}`;
+      const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      document.getElementById('date').textContent =
+        `${days[now.getDay()]} ${months[now.getMonth()]} ${now.getDate()}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Format minutes
+    function minsAway(isoStr) {
+      if (!isoStr) return null;
+      const diff = (new Date(isoStr) - Date.now()) / 1000 / 60;
+      return diff;
+    }
+
+    function fmtTime(isoStr) {
+      if (!isoStr) return '';
+      const d = new Date(isoStr);
+      const h = String(d.getHours()).padStart(2,'0');
+      const m = String(d.getMinutes()).padStart(2,'0');
+      return `${h}:${m}`;
+    }
+
+    // Build train card HTML
+    function buildCard(train, index) {
+      const mins = minsAway(train.arrival || train.departure);
+      const sched = fmtTime(train.arrival || train.departure);
+
+      let etaHtml, cardClass = 'train-card', seqLabel;
+
+      if (index === 0) {
+        seqLabel = 'Next train';
+        cardClass += ' next';
+      } else if (index === 1) {
+        seqLabel = '2nd train';
+      } else {
+        seqLabel = '3rd train';
+      }
+
+      if (mins === null) {
+        etaHtml = `<span class="train-eta">--</span>`;
+      } else if (mins <= 0.5) {
+        cardClass = 'train-card arriving';
+        seqLabel = index === 0 ? 'Now arriving' : seqLabel;
+        etaHtml = `<span class="train-eta" style="font-size:36px;color:var(--green)">NOW</span>`;
+      } else if (mins < 1) {
+        etaHtml = `<span class="train-eta">&lt;1<span class="train-eta-unit">min</span></span>`;
+      } else {
+        const m = Math.floor(mins);
+        etaHtml = `<span class="train-eta">${m}<span class="train-eta-unit">min</span></span>`;
+      }
+
+      const dest = train.headsign || 'Alewife';
+
+      return `
+        <div class="${cardClass}">
+          <div class="train-left">
+            <div class="train-seq">${seqLabel}</div>
+            <div class="train-dest">${dest.toUpperCase()}</div>
+            <div class="train-time-label">Arrives ${sched}</div>
+          </div>
+          <div class="train-right">
+            ${etaHtml}
+          </div>
+        </div>`;
+    }
+
+    // Fetch predictions
+    async function fetchTrains() {
+      const dot  = document.getElementById('statusDot');
+      const txt  = document.getElementById('statusText');
+      const list = document.getElementById('trainList');
+
+      try {
+        const url = `${API_BASE}/predictions?filter[stop]=${STOP_ID}&filter[route]=${ROUTE_ID}&filter[direction_id]=${DIRECTION}&include=trip&sort=arrival_time&fields[prediction]=arrival_time,departure_time,direction_id,status&fields[trip]=headsign`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+
+        // Build headsign lookup from included trips
+        const headsigns = {};
+        if (json.included) {
+          for (const inc of json.included) {
+            if (inc.type === 'trip') {
+              headsigns[inc.id] = inc.attributes.headsign;
+            }
+          }
+        }
+
+        // Filter to upcoming trains
+        const now = Date.now();
+        const trains = (json.data || [])
+          .filter(p => {
+            const t = p.attributes.arrival_time || p.attributes.departure_time;
+            return t && (new Date(t) - now) > -30000; // include trains up to 30s past
+          })
+          .slice(0, MAX_TRAINS)
+          .map(p => ({
+            arrival:   p.attributes.arrival_time,
+            departure: p.attributes.departure_time,
+            headsign:  p.relationships?.trip?.data?.id
+                         ? headsigns[p.relationships.trip.data.id]
+                         : 'Alewife'
+          }));
+
+        lastUpdate = new Date();
+        dot.className = 'status-dot';
+        txt.textContent = `Updated ${fmtTime(lastUpdate.toISOString())}`;
+
+        if (trains.length === 0) {
+          list.innerHTML = `
+            <div class="state-msg">
+              <div class="icon">○</div>
+              <div class="msg">No predictions available</div>
+            </div>`;
+          return;
+        }
+
+        list.innerHTML = trains.map((t, i) => buildCard(t, i)).join('');
+
+      } catch (err) {
+        console.error(err);
+        dot.className = 'status-dot error';
+        txt.textContent = 'Connection error';
+
+        if (!lastUpdate) {
+          list.innerHTML = `
+            <div class="state-msg">
+              <div class="icon">!</div>
+              <div class="msg">Could not load data</div>
+            </div>`;
+        }
+        // Otherwise keep showing stale data
+      }
+    }
+
+    // Fetch alerts (non-blocking)
+    async function fetchAlerts() {
+      try {
+        const url = `${API_BASE}/alerts?filter[route]=${ROUTE_ID}&filter[stop]=${STOP_ID}&filter[activity]=BOARD&fields[alert]=header`;
+        const res = await fetch(url);
+        const json = await res.json();
+        const banner = document.getElementById('alertBanner');
+        const alerts = (json.data || []).filter(a => a.attributes.header);
+        if (alerts.length > 0) {
+          banner.textContent = '⚠ ' + alerts[0].attributes.header;
+          banner.classList.add('visible');
+        } else {
+          banner.classList.remove('visible');
+        }
+      } catch (_) {}
+    }
+
+    // Init
+    fetchTrains();
+    fetchAlerts();
+    refreshTimer = setInterval(() => {
+      fetchTrains();
+      fetchAlerts();
+    }, REFRESH_MS);
+  </script>
+</body>
+</html>
