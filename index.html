@@ -7,17 +7,17 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
   <style>
     :root {
-      --red: #DA291C;
-      --red-dim: #8B1A12;
-      --bg: #0A0A0A;
-      --surface: #111111;
-      --surface2: #1A1A1A;
-      --border: #2A2A2A;
-      --text: #F0F0F0;
-      --text-dim: #666666;
-      --text-muted: #3A3A3A;
-      --green: #00C853;
-      --yellow: #FFD600;
+      --red: #FF3B2F;
+      --red-dim: #FF3B2F;
+      --bg: #000000;
+      --surface: #1C1C1C;
+      --surface2: #242424;
+      --border: #333333;
+      --text: #FFFFFF;
+      --text-dim: #AAAAAA;
+      --text-muted: #555555;
+      --green: #30FF6A;
+      --yellow: #FFE000;
       --mono: 'DM Mono', monospace;
       --display: 'Bebas Neue', sans-serif;
     }
@@ -131,9 +131,9 @@
 
     .train-card {
       background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 14px 18px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -143,45 +143,43 @@
     }
 
     .train-card.next {
-      border-color: var(--red-dim);
-      background: #160808;
+      border-color: var(--red);
+      background: #2A0000;
     }
 
     .train-card.next::before {
       content: '';
       position: absolute;
       left: 0; top: 0; bottom: 0;
-      width: 3px;
+      width: 6px;
       background: var(--red);
-      box-shadow: 0 0 8px var(--red);
     }
 
     .train-card.arriving {
-      border-color: #1a5e00;
-      background: #061006;
+      border-color: var(--green);
+      background: #002A10;
     }
 
     .train-card.arriving::before {
       content: '';
       position: absolute;
       left: 0; top: 0; bottom: 0;
-      width: 3px;
+      width: 6px;
       background: var(--green);
-      box-shadow: 0 0 8px var(--green);
     }
 
     .train-left {}
 
     .train-seq {
-      font-size: 14px;
+      font-size: 16px;
       letter-spacing: 0.15em;
-      color: var(--text-muted);
+      color: var(--text-dim);
       text-transform: uppercase;
       margin-bottom: 3px;
     }
 
-    .train-card.next .train-seq { color: var(--red-dim); }
-    .train-card.arriving .train-seq { color: #2d6e00; }
+    .train-card.next .train-seq { color: var(--red); }
+    .train-card.arriving .train-seq { color: var(--green); }
 
     .train-dest {
       font-family: var(--display);
@@ -192,11 +190,12 @@
     }
 
     .train-time-label {
-      font-size: 14px;
-      letter-spacing: 0.1em;
-      color: var(--text-dim);
+      font-size: 20px;
+      letter-spacing: 0.08em;
+      color: #FFFFFF;
       text-transform: uppercase;
-      margin-top: 4px;
+      margin-top: 6px;
+      font-weight: 500;
     }
 
     .train-right {
@@ -205,20 +204,20 @@
 
     .train-eta {
       font-family: var(--display);
-      font-size: 80px;
+      font-size: 110px;
       line-height: 1;
       letter-spacing: 0.02em;
     }
 
     .train-card.next .train-eta { color: var(--red); }
     .train-card.arriving .train-eta { color: var(--green); }
-    .train-card:not(.next):not(.arriving) .train-eta { color: var(--text-dim); }
+    .train-card:not(.next):not(.arriving) .train-eta { color: #FFFFFF; }
 
     .train-eta-unit {
-      font-size: 20px;
+      font-size: 34px;
       letter-spacing: 0.08em;
       color: inherit;
-      opacity: 0.7;
+      opacity: 0.8;
       margin-left: 2px;
     }
 
@@ -433,7 +432,7 @@
       } else if (mins <= 0.5) {
         cardClass = 'train-card arriving';
         seqLabel = index === 0 ? 'Now arriving' : seqLabel;
-        etaHtml = `<span class="train-eta" style="font-size:56px;color:var(--green)">NOW</span>`;
+        etaHtml = `<span class="train-eta" style="font-size:90px;color:var(--green)">NOW</span>`;
       } else if (mins < 1) {
         etaHtml = `<span class="train-eta">&lt;1<span class="train-eta-unit">min</span></span>`;
       } else {
