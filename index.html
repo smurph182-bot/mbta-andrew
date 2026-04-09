@@ -67,7 +67,7 @@
 
     .line-label {
       font-family: var(--mono);
-      font-size: 11px;
+      font-size: 15px;
       font-weight: 500;
       letter-spacing: 0.15em;
       color: var(--red);
@@ -76,14 +76,14 @@
 
     .station-name {
       font-family: var(--display);
-      font-size: 52px;
+      font-size: 72px;
       line-height: 0.9;
       letter-spacing: 0.02em;
       color: var(--text);
     }
 
     .direction {
-      font-size: 11px;
+      font-size: 16px;
       letter-spacing: 0.12em;
       color: var(--text-dim);
       text-transform: uppercase;
@@ -100,14 +100,14 @@
 
     .clock {
       font-family: var(--display);
-      font-size: 48px;
+      font-size: 72px;
       line-height: 1;
       letter-spacing: 0.03em;
       color: var(--text);
     }
 
     .date {
-      font-size: 10px;
+      font-size: 15px;
       letter-spacing: 0.1em;
       color: var(--text-dim);
       text-transform: uppercase;
@@ -173,7 +173,7 @@
     .train-left {}
 
     .train-seq {
-      font-size: 10px;
+      font-size: 14px;
       letter-spacing: 0.15em;
       color: var(--text-muted);
       text-transform: uppercase;
@@ -185,14 +185,14 @@
 
     .train-dest {
       font-family: var(--display);
-      font-size: 30px;
+      font-size: 46px;
       letter-spacing: 0.04em;
       line-height: 1;
       color: var(--text);
     }
 
     .train-time-label {
-      font-size: 10px;
+      font-size: 14px;
       letter-spacing: 0.1em;
       color: var(--text-dim);
       text-transform: uppercase;
@@ -205,7 +205,7 @@
 
     .train-eta {
       font-family: var(--display);
-      font-size: 54px;
+      font-size: 80px;
       line-height: 1;
       letter-spacing: 0.02em;
     }
@@ -215,7 +215,7 @@
     .train-card:not(.next):not(.arriving) .train-eta { color: var(--text-dim); }
 
     .train-eta-unit {
-      font-size: 13px;
+      font-size: 20px;
       letter-spacing: 0.08em;
       color: inherit;
       opacity: 0.7;
@@ -223,7 +223,7 @@
     }
 
     .train-sched {
-      font-size: 11px;
+      font-size: 15px;
       letter-spacing: 0.06em;
       color: var(--text-dim);
       margin-top: 2px;
@@ -263,14 +263,14 @@
     }
 
     .status-text {
-      font-size: 10px;
+      font-size: 13px;
       letter-spacing: 0.1em;
       color: var(--text-dim);
       text-transform: uppercase;
     }
 
     .refresh-info {
-      font-size: 10px;
+      font-size: 13px;
       letter-spacing: 0.08em;
       color: var(--text-muted);
       text-transform: uppercase;
@@ -433,7 +433,7 @@
       } else if (mins <= 0.5) {
         cardClass = 'train-card arriving';
         seqLabel = index === 0 ? 'Now arriving' : seqLabel;
-        etaHtml = `<span class="train-eta" style="font-size:36px;color:var(--green)">NOW</span>`;
+        etaHtml = `<span class="train-eta" style="font-size:56px;color:var(--green)">NOW</span>`;
       } else if (mins < 1) {
         etaHtml = `<span class="train-eta">&lt;1<span class="train-eta-unit">min</span></span>`;
       } else {
