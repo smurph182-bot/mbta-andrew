@@ -96,6 +96,10 @@
 
     .clock-block {
       text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
     }
 
     .clock {
@@ -112,6 +116,27 @@
       color: var(--text-dim);
       text-transform: uppercase;
       margin-top: 4px;
+    }
+
+    .weather {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .weather-temp {
+      font-family: var(--display);
+      font-size: 36px;
+      line-height: 1;
+      color: var(--text);
+    }
+
+    .weather-feels {
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      text-transform: uppercase;
     }
 
     /* Divider */
@@ -340,6 +365,10 @@
     <div class="clock-block">
       <div class="clock" id="clock">--:--</div>
       <div class="date" id="date">---</div>
+      <div class="weather">
+        <span class="weather-temp" id="weatherTemp">--°</span>
+        <span class="weather-feels" id="weatherFeels">Feels like --°</span>
+      </div>
     </div>
   </div>
 
@@ -552,13 +581,28 @@
       } catch (_) {}
     }
 
+    // Weather (Open-Meteo, no API key required)
+    async function fetchWeather() {
+      try {
+        const url = 'https://api.open-meteo.com/v1/forecast?latitude=42.3601&longitude=-71.0589&current=temperature_2m,apparent_temperature&temperature_unit=fahrenheit&wind_speed_unit=mph&forecast_days=1';
+        const res = await fetch(url);
+        const json = await res.json();
+        const temp   = Math.round(json.current.temperature_2m);
+        const feels  = Math.round(json.current.apparent_temperature);
+        document.getElementById('weatherTemp').textContent  = `${temp}°F`;
+        document.getElementById('weatherFeels').textContent = `Feels like ${feels}°`;
+      } catch (_) {}
+    }
+
     // Init
     fetchTrains();
     fetchAlerts();
+    fetchWeather();
     refreshTimer = setInterval(() => {
       fetchTrains();
       fetchAlerts();
     }, REFRESH_MS);
+    setInterval(fetchWeather, 600000); // refresh weather every 10 min
   </script>
 </body>
 </html>
